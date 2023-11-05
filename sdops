@@ -1,0 +1,122 @@
+#!/bin/bash
+
+######################################
+# STABLE DIFFUSION WEBUI DOCKER TOOL #
+######################################
+
+#----------------------------------------------#
+
+# Define the path for temp files
+mkdir -p $HOME/.config/sdwd
+DPATH="$HOME/.config/sdwd"
+[[ -f $DPATH/active ]] || touch $DPATH/active
+CONNECTION_FILE="$DPATH/active"
+
+title() {
+  echo
+  echo " === Stable Diffusion WebUI Docker Operations Tool ==="
+}
+
+# Function to install sdwd
+install() {
+    echo "Installing Stable Diffusion WebUI Docker..."
+    docker compose --profile download up --build
+}
+
+start() {
+	clear
+	echo
+	echo "1. InvokeAI"
+	echo "2. Auto1111"
+	echo "3. Auto1111 CPU"
+	echo "4. ComfyUI"
+	echo "5. ComfyUI CPU"
+	echo
+	read -p "Choose a profile above to start up (1-5): " choice
+
+	if [[ $choice == "1" ]]
+	then
+		echo "Starting InvokeAI Web GUI..."
+		docker compose --profile invoke up -d --build
+		exit
+	elif [[ $choice == "2" ]]
+	then
+		echo "Starting Auto1111 Web GUI..."
+		docker compose --profile auto up -d --build
+		exit
+	elif [[ $choice == "3" ]]
+	then
+		echo "Starting Auto1111 CPU Web GUI..."
+		docker compose --profile auto-cpu up -d --build
+		exit
+	elif [[ $choice == "4" ]]
+	then
+		echo "Starting ComfyUI Web GUI..."
+		docker compose --profile comfy up -d --build
+		exit
+	elif [[ $choice == "5" ]]
+	then
+		echo "Starting ComfyUI CPU Web GUI..."
+		docker compose --profile comfy-cpu up -d --build
+		exit
+	else
+		echo "Invalid choice."
+		return
+	fi
+}
+
+restart(){
+	clear
+	docker ps | grep -oe 'webui-docker-invoke' -e 'webui-docker-auto' -e 'webui-docker-auto-cpu' -e 'webui-docker-comfy' -e 'webui-docker-comfy-cpu' > $CONNECTION_FILE
+	sed -i 's/webui-docker-//' $CONNECTION_FILE
+	active=`cat $CONNECTION_FILE`
+	echo
+	echo "Restarting $active WebUI"
+	echo
+	docker compose --profile $active down
+	docker compose --profile $active up -d --build
+	exit
+}
+
+stop(){
+	clear
+	docker ps | grep -oe 'webui-docker-invoke' -e 'webui-docker-auto' -e 'webui-docker-auto-cpu' -e 'webui-docker-comfy' -e 'webui-docker-comfy-cpu' > $CONNECTION_FILE
+	sed -i 's/webui-docker-//' $CONNECTION_FILE
+	active=`cat $CONNECTION_FILE`
+	echo
+	echo "Shutting down $active WebUI"
+	echo
+	docker compose --profile $active down
+	exit
+}
+
+# Main menu
+main() {
+ title
+ while true; do
+   echo
+   echo "1. Install"
+   echo "2. Start"
+   echo "3. Restart"
+   echo "4. Stop"
+   echo "5. Exit"
+   echo
+   read -p "Select an option (1-5): " mainChoice
+
+   case $mainChoice in
+     1) install ;;
+     2) start ;;
+     3) restart ;;
+     4) stop ;;
+     5) break ;;
+     *) echo
+        echo "Invalid option. Please try again." ;;
+   esac
+ done
+}
+
+# Clear output
+clear
+
+# Run main function
+main
