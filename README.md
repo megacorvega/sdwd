@@ -6,5 +6,5 @@
 2. Run `chmod +x sdops` so that the script can be used.
 3. Run `./sdops` to start the script.
 
-**Warning**
-The user running this script must be a part of the docker group in order for restarting and stopping containers to work correctly.
+> **Warning**
+> The user running this script must be a part of the docker group in order for restarting and stopping containers to work correctly.
