@@ -1,5 +1,7 @@
 # sdwd
 
+This script is meant to be used with the [stable-diffusion-webui-docker](https://github.com/AbdBarho/stable-diffusion-webui-docker) repository.
+
 ## Instructions
 
 1. Download the `sdops` script and place it on the top level of the `stable-diffusion-webui-docker` folder.
