@@ -9,4 +9,4 @@ This script is meant to be used with the [stable-diffusion-webui-docker](https:/
 3. Run `./sdops` to start the script.
 
 > **Warning**
-> The user running this script must be a part of the docker group in order for restarting and stopping containers to work correctly.
+> The user running this script must be a part of the docker group in order for restarting and stopping containers to work with non-root permissions.
